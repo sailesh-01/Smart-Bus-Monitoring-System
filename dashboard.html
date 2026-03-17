@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Smart Bus Tracking</title>
+    <link rel="stylesheet" href="styles.css?v=1.1">
+</head>
+<body class="dashboard-page">
+    <div class="container">
+        <!-- Main Tracking Section (Left Column on Desktop) -->
+        <div class="tracking-card glass-card">
+            <div class="tracking-header">
+                <h3 style="font-weight: 600; font-size: 1.5rem;">Live Route Tracking</h3>
+                <div class="status-indicator">
+                    <div class="pulse"></div>
+                    <span id="status-text">On Route</span>
+                </div>
+            </div>
+
+            <div class="track-container">
+                <div class="track-area">
+                    <div class="track-line-bg"></div>
+                    <div id="progress-line" class="track-line-progress"></div>
+                    <div id="bus-pointer" class="bus-indicator">
+                        <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
+                    </div>
+                    <div id="track-stops" class="track-stops">
+                        <!-- Dynamic Stops -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-label">Bus Speed</span>
+                    <span id="bus-speed" class="stat-value">-- km/h</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Occupancy</span>
+                    <span id="bus-occupancy" class="stat-value">--</span>
+                </div>
+            </div>
+
+            <div class="eta-box">
+                <div>
+                    <span class="step-label">Current Location</span>
+                    <p id="current-location" class="step-value" style="color: var(--accent);">Fetching...</p>
+                </div>
+                <div style="text-align: right;">
+                    <span class="step-label">Next Stop</span>
+                    <p id="next-stop" class="step-value">...</p>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="stat-item" style="padding: 12px; background: rgba(255, 255, 255, 0.05);">
+                    <span class="stat-label">End Point</span>
+                    <p id="end-point" style="font-size: 0.9rem; font-weight: 500;">...</p>
+                </div>
+                <div class="stat-item" style="padding: 12px; background: rgba(99, 102, 241, 0.1); border-color: rgba(99, 102, 241, 0.2);">
+                    <span class="stat-label">Arrival ETA</span>
+                    <span id="eta" class="eta-value" style="font-size: 1.2rem;">-- mins</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Info Badge (Top Right Column on Desktop) -->
+        <div class="user-badge glass-card">
+            <div class="user-info">
+                <p class="subtitle" style="margin-bottom: 0;">Welcome back,</p>
+                <h2 id="student-name">Student Name</h2>
+            </div>
+            <div id="bus-no" class="bus-pill">Bus 12</div>
+        </div>
+
+        <!-- Sidebar Widgets (Below Badge on Desktop) -->
+        <div class="sidebar glass-card" style="background: transparent; border: none; box-shadow: none; padding: 0;">
+            <div class="driver-info glass-card" style="margin-top: 0;">
+                <div class="driver-avatar" id="driver-initials">--</div>
+                <div class="driver-detail">
+                    <h4 id="driver-name">Loading...</h4>
+                    <p>Driver ★ 4.9</p>
+                </div>
+                <div class="call-btn" title="Call Driver">
+                    <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                </div>
+            </div>
+
+            <div class="widget-section">
+                <div class="widget-card glass-card">
+                    <span class="stat-label">Weather</span>
+                    <p id="weather-info" style="font-size: 0.9rem; margin-top: 4px;">--</p>
+                </div>
+                <div class="widget-card glass-card">
+                    <span class="stat-label">Campus Notice</span>
+                    <div class="notice-scroll" id="notice-list">
+                    </div>
+                </div>
+            </div>
+
+            <div class="emergency-strip" style="margin-top: 20px;">
+                <div class="action-btn report-btn" onclick="alert('Report submitted successfully!')">Report Issue</div>
+                <div class="action-btn sos-btn" onclick="confirm('Call Emergency Services?')">SOS Alert</div>
+            </div>
+
+            <button id="logout-btn" class="logout-btn glass-card">Sign Out</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
