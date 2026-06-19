@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Routes | Smart Bus Tracking</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .routes-container {
+            max-width: 1000px;
+            margin: 60px auto;
+            padding: 40px;
+        }
+        .route-card {
+            margin-bottom: 24px;
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            align-items: center;
+            gap: 30px;
+            transition: all 0.3s ease;
+        }
+        .route-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .bus-badge {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            box-shadow: 0 8px 16px rgba(99, 102, 241, 0.3);
+        }
+        .bus-id { font-size: 1.4rem; font-weight: 700; }
+        .bus-label { font-size: 0.7rem; text-transform: uppercase; font-weight: 600; opacity: 0.8; }
+        
+        .route-path {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 10px;
+        }
+        .stop-point {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        .stop-name { font-weight: 500; font-size: 0.95rem; color: #fff; }
+        .stop-arrow { color: var(--text-dim); opacity: 0.4; font-size: 1.2rem; }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 30px;
+            transition: all 0.3s;
+        }
+        .back-btn:hover {
+            transform: translateX(-5px);
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body class="dashboard-page">
+    <div class="routes-container">
+        <a href="login.html" class="back-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Back to Login
+        </a>
+        
+        <div class="login-header" style="text-align: left; margin-bottom: 48px;">
+            <h1 style="font-size: 2.8rem;">Explore Bus Routes</h1>
+            <p class="subtitle">Comprehensive map of all active campus transits</p>
+        </div>
+
+        <div id="routes-list">
+            <div style="text-align: center; padding: 40px; color: var(--text-dim);">
+                <p>Loading routes from campus server...</p>
+            </div>
+        </div>
+
+        <p style="text-align: center; color: var(--text-dim); margin-top: 40px; font-size: 0.9rem;">
+            Missing a route? Contact the transport department at transport@college.edu
+        </p>
+    </div>
+
+    <script>
+        const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? `http://${window.location.hostname}:3000` : '';
+
+        async function loadRoutes() {
+            const container = document.getElementById('routes-list');
+            try {
+                const res = await fetch(`${API_BASE}/api/data`);
+                const data = await res.json();
+                const routeMap = data.routeMap || {};
+
+                if (Object.keys(routeMap).length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--error);">No routes found in database.</p>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                Object.entries(routeMap).forEach(([bus, stops], index) => {
+                    const busId = bus.replace('Bus ', '');
+                    const colors = [
+                        'linear-gradient(135deg, var(--primary), var(--secondary))',
+                        'linear-gradient(135deg, var(--accent), var(--primary))',
+                        'linear-gradient(135deg, #10b981, #3b82f6)',
+                        'linear-gradient(135deg, #f59e0b, #ef4444)'
+                    ];
+                    const color = colors[index % colors.length];
+                    
+                    // Generate Google Maps Directions link
+                    const mapUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(stops[0])}&destination=${encodeURIComponent(stops[stops.length-1])}` + 
+                                   (stops.length > 2 ? `&waypoints=${encodeURIComponent(stops.slice(1, -1).join('|'))}` : '') + 
+                                   `&travelmode=driving`;
+                                   
+                    const card = document.createElement('div');
+                    card.className = 'route-card glass-card';
+                    card.innerHTML = `
+                        <div class="bus-badge map-link" style="background: ${color}; cursor: pointer; transition: transform 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.2);" onclick="window.open('${mapUrl}', '_blank')" title="Click to view route on Google Maps" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                            <span class="bus-id">${busId}</span>
+                            <span class="bus-label">Bus</span>
+                        </div>
+                        <div class="route-info">
+                            <h3 style="margin-bottom: 15px; color: var(--accent); display: flex; align-items: center; gap: 10px;">
+                                ${bus} Route
+                                <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: normal; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 10px;">Click bus number for map</span>
+                            </h3>
+                            <div class="route-path">
+                                ${stops.map((stop, i) => `
+                                    <div class="stop-point">
+                                        <span class="stop-name">${stop}</span>
+                                        ${i < stops.length - 1 ? '<span class="stop-arrow">→</span>' : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                console.error("Failed to load routes:", err);
+                container.innerHTML = '<p style="text-align: center; color: var(--error);">Could not connect to the transport server. Please check your connection.</p>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadRoutes);
+    </script>
+</body>
+</html>

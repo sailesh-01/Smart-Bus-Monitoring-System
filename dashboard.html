@@ -4,12 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | Smart Bus Tracking</title>
-    <link rel="stylesheet" href="styles.css?v=1.1">
+    <link rel="stylesheet" href="styles.css?v=1.4">
 </head>
 <body class="dashboard-page">
     <div class="container">
+
+        <!-- Admin Panel (Staff Only) -->
+        <div id="admin-panel" class="glass-card hidden" style="grid-area: map; padding: 32px; min-height: 700px;">
+            <div class="admin-header">
+                    <h2>Administrative Controls</h2>
+                    <div style="display: flex; gap: 12px;">
+                        <button id="gps-broadcast-btn" class="action-btn" style="background: var(--secondary); color: #fff; border: none; padding: 10px 20px;">📡 Start GPS Broadcast</button>
+                        <button id="add-student-trigger" class="action-btn" style="background: var(--primary); color: #fff; border: none; padding: 10px 20px;">+ Add Student</button>
+                    </div>
+                </div>
+            
+            <div class="admin-table-container" style="margin-top: 32px; overflow-x: auto;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Roll No</th>
+                            <th>Name</th>
+                            <th>Bus No</th>
+                            <th>Route</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="student-list-body">
+                        <!-- Filled by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Notice Management Section -->
+            <div style="margin-top: 48px; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <div class="tracking-header">
+                    <div>
+                        <h3 style="font-weight: 600; font-size: 1.5rem;">Campus Notice Management</h3>
+                        <p class="subtitle" style="margin-bottom: 0;">Broadcast important announcements</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
+                    <input type="text" id="new-notice-input" placeholder="Type a new announcement..." style="flex-grow: 1; min-width: 300px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px 20px; color: #fff; font-size: 0.95rem;">
+                    <button id="add-notice-btn" class="bus-pill" style="cursor: pointer; background: var(--success); color: #fff; border: none; padding: 12px 24px; font-weight: 600; border-radius: 12px;">Add Notice (Dashboard)</button>
+                    <button id="add-news-btn" class="bus-pill" style="cursor: pointer; background: var(--primary); color: #fff; border: none; padding: 12px 24px; font-weight: 600; border-radius: 12px;">Add News (Login Page)</button>
+                </div>
+
+                <div id="admin-notice-list" style="margin-top: 24px; display: flex; flex-direction: column; gap: 12px;">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+        </div>
+
         <!-- Main Tracking Section (Left Column on Desktop) -->
-        <div class="tracking-card glass-card">
+        <div id="tracking-section" class="tracking-card glass-card">
+            <div id="campus-map-container" class="map-overlay hidden">
+                <svg viewBox="0 0 800 200" class="campus-map" id="campus-svg">
+                    <path d="M50 100 Q 200 50, 400 100 T 750 100" class="map-path" />
+                    <!-- Points injected by JS -->
+                    <g id="map-points-group"></g>
+                    <g id="simulation-bus" class="bus-marker hidden">
+                        <circle r="12" fill="var(--primary)" />
+                        <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z" fill="#fff" transform="translate(-8.4, -9.1) scale(0.7)" />
+                        <text class="bus-label" y="25" text-anchor="middle" fill="#fff" style="font-size: 8px; font-weight: bold;"></text>
+                    </g>
+                </svg>
+            </div>
+
             <div class="tracking-header">
                 <h3 style="font-weight: 600; font-size: 1.5rem;">Live Route Tracking</h3>
                 <div class="status-indicator">
@@ -23,6 +85,7 @@
                     <div class="track-line-bg"></div>
                     <div id="progress-line" class="track-line-progress"></div>
                     <div id="bus-pointer" class="bus-indicator">
+                        <div id="time-spent" class="time-tooltip">0 mins</div>
                         <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
                     </div>
                     <div id="track-stops" class="track-stops">
@@ -40,6 +103,11 @@
                     <span class="stat-label">Occupancy</span>
                     <span id="bus-occupancy" class="stat-value">--</span>
                 </div>
+                <div id="live-gps-card" class="stat-item" style="border-color: var(--secondary); background: rgba(168, 85, 247, 0.05);">
+                    <span class="stat-label">Live GPS</span>
+                    <span id="live-gps-coords" class="stat-value" style="font-size: 1.1rem;">Not Active</span>
+                    <a id="google-maps-link" href="#" target="_blank" class="hidden" style="display: block; font-size: 0.7rem; color: var(--accent); margin-top: 4px; text-decoration: none;">View on Maps ↗</a>
+                </div>
             </div>
 
             <div class="eta-box">
@@ -47,20 +115,37 @@
                     <span class="step-label">Current Location</span>
                     <p id="current-location" class="step-value" style="color: var(--accent);">Fetching...</p>
                 </div>
+                <div id="pinned-stop-container" class="pinned-indicator hidden">
+                    <span class="step-label">My Pinned Stop</span>
+                    <p id="pinned-eta" class="step-value" style="color: #fff;">-- mins</p>
+                </div>
                 <div style="text-align: right;">
                     <span class="step-label">Next Stop</span>
                     <p id="next-stop" class="step-value">...</p>
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div style="display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 12px; margin-bottom: 24px;">
+                <div class="stat-item" style="padding: 12px; background: rgba(255, 255, 255, 0.05);">
+                    <span class="stat-label">My Stop</span>
+                    <p id="my-stop" style="font-size: 0.9rem; font-weight: 500;">...</p>
+                </div>
                 <div class="stat-item" style="padding: 12px; background: rgba(255, 255, 255, 0.05);">
                     <span class="stat-label">End Point</span>
                     <p id="end-point" style="font-size: 0.9rem; font-weight: 500;">...</p>
                 </div>
                 <div class="stat-item" style="padding: 12px; background: rgba(99, 102, 241, 0.1); border-color: rgba(99, 102, 241, 0.2);">
-                    <span class="stat-label">Arrival ETA</span>
+                    <span class="stat-label">Total ETA</span>
                     <span id="eta" class="eta-value" style="font-size: 1.2rem;">-- mins</span>
+                </div>
+            </div>
+
+            <div class="feedback-section">
+                <span class="stat-label">Update Crowd Status</span>
+                <div class="vote-buttons">
+                    <button class="vote-btn" data-status="Low">🟢 Low</button>
+                    <button class="vote-btn" data-status="Moderate">🟡 Med</button>
+                    <button class="vote-btn" data-status="High">🔴 Full</button>
                 </div>
             </div>
         </div>
@@ -68,8 +153,15 @@
         <!-- User Info Badge (Top Right Column on Desktop) -->
         <div class="user-badge glass-card">
             <div class="user-info">
-                <p class="subtitle" style="margin-bottom: 0;">Welcome back,</p>
-                <h2 id="student-name">Student Name</h2>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div>
+                        <p class="subtitle" style="margin-bottom: 0;">Welcome back,</p>
+                        <h2 id="student-name">Student Name</h2>
+                    </div>
+                    <button id="theme-toggle" class="icon-toggle" title="Toggle Theme">🌓</button>
+                    <button id="share-ride-btn" class="icon-toggle" title="Share Ride Status">🔗</button>
+                    <button id="boarding-pass-trigger" class="icon-toggle" title="My Boarding Pass" style="background: rgba(99, 102, 241, 0.2); border-radius: 8px; font-size: 1.4rem; padding: 6px;">🎟️</button>
+                </div>
             </div>
             <div id="bus-no" class="bus-pill">Bus 12</div>
         </div>
@@ -82,9 +174,9 @@
                     <h4 id="driver-name">Loading...</h4>
                     <p>Driver ★ 4.9</p>
                 </div>
-                <div class="call-btn" title="Call Driver">
+                <a id="call-driver-btn" href="#" class="call-btn" title="Call Driver" style="text-decoration: none;">
                     <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
-                </div>
+                </a>
             </div>
 
             <div class="widget-section">
@@ -93,20 +185,188 @@
                     <p id="weather-info" style="font-size: 0.9rem; margin-top: 4px;">--</p>
                 </div>
                 <div class="widget-card glass-card">
-                    <span class="stat-label">Campus Notice</span>
+                    <span class="stat-label">Notice Board</span>
                     <div class="notice-scroll" id="notice-list">
+                        <!-- Populated by JS -->
                     </div>
                 </div>
+                <div class="widget-card glass-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="stat-label">Lost & Found</span>
+                        <button id="report-lost-btn" style="font-size: 0.7rem; background: transparent; border: 1px solid var(--glass-border); color: #fff; padding: 2px 8px; border-radius: 4px; cursor: pointer;">Post</button>
+                    </div>
+                    <div class="notice-scroll" id="lost-found-list">
+                        <div class="notice-item" style="font-style: italic; opacity: 0.6;">No items reported today.</div>
+                    </div>
+                </div>
+
+
             </div>
 
             <div class="emergency-strip" style="margin-top: 20px;">
-                <div class="action-btn report-btn" onclick="alert('Report submitted successfully!')">Report Issue</div>
-                <div class="action-btn sos-btn" onclick="confirm('Call Emergency Services?')">SOS Alert</div>
+                <div class="action-btn report-btn" id="report-trigger">Report Issue</div>
+                <div class="action-btn sos-btn" id="sos-trigger">SOS Alert</div>
             </div>
-
+            
             <button id="logout-btn" class="logout-btn glass-card">Sign Out</button>
         </div>
     </div>
+
+    <!-- ADD STUDENT MODAL -->
+    <div id="add-modal" class="modal-overlay hidden">
+        <div class="modal-card glass-card">
+            <div class="modal-header">
+                <h2>Add New Student</h2>
+                <p>Register a new student to the tracking system</p>
+            </div>
+            <div class="input-group" style="text-align: left;">
+                <label>Roll Number</label>
+                <input type="text" id="add-roll" placeholder="e.g. ES24AD999">
+            </div>
+            <div class="input-group" style="text-align: left;">
+                <label>Full Name</label>
+                <input type="text" id="add-name" placeholder="Student Name">
+            </div>
+            <div class="input-group" style="text-align: left;">
+                <label>Bus Number</label>
+                <select id="add-bus">
+                    <option value="">Select a Bus</option>
+                </select>
+            </div>
+            <div id="add-driver-preview" class="driver-preview-box hidden">
+                <p><strong>Driver:</strong> <span id="add-driver-display">--</span></p>
+                <p><strong>Phone:</strong> <span id="add-phone-display">--</span></p>
+            </div>
+            <div class="input-group" style="text-align: left;">
+                <label>Advisor Email</label>
+                <input type="email" id="add-advisor" placeholder="advisor@college.edu">
+            </div>
+            <div class="modal-options">
+                <button id="confirm-add-btn" class="modal-btn" style="background: var(--primary); color: #fff; border: none; width: 100%;">Create Record</button>
+            </div>
+            <button id="close-add" class="close-btn" style="width: 100%; margin-top: 10px;">Cancel</button>
+        </div>
+    </div>
+
+    <div id="edit-modal" class="modal-overlay hidden">
+        <div class="modal-card glass-card">
+            <div class="modal-header">
+                <h2>Edit Student Info</h2>
+                <p>Modify student details and bus assignments</p>
+            </div>
+            <div class="input-group" style="text-align: left;">
+                <label>Roll Number</label>
+                <input type="text" id="edit-roll" disabled style="opacity: 0.6; cursor: not-allowed;">
+            </div>
+            <div class="input-group" style="text-align: left;">
+                <label>Full Name</label>
+                <input type="text" id="edit-name" placeholder="Name">
+            </div>
+            <div class="input-group" style="text-align: left;">
+                <label>Bus Number</label>
+                <select id="edit-bus">
+                    <option value="">Select a Bus</option>
+                </select>
+            </div>
+            <div id="edit-driver-preview" class="driver-preview-box">
+                <p><strong>Driver:</strong> <span id="edit-driver-display">--</span></p>
+                <p><strong>Phone:</strong> <span id="edit-phone-display">--</span></p>
+            </div>
+            <div class="input-group" style="text-align: left;">
+                <label>Advisor Email</label>
+                <input type="email" id="edit-advisor" placeholder="advisor@college.edu">
+            </div>
+            <div class="modal-options">
+                <button id="save-student-btn" class="modal-btn" style="background: var(--success); color: #fff; border: none; width: 100%;">Save Changes</button>
+            </div>
+            <button id="close-edit" class="close-btn" style="width: 100%; margin-top: 10px;">Cancel</button>
+        </div>
+    </div>
+
+    <!-- SOS MODAL -->
+    <div id="sos-modal" class="modal-overlay hidden">
+        <div class="modal-card glass-card">
+            <div class="modal-header">
+                <div class="sos-icon">!</div>
+                <h2>Emergency SOS</h2>
+                <p>Choose an emergency contact method</p>
+            </div>
+            <div class="modal-options">
+                <a href="mailto:emergency@college.edu" class="modal-btn mail-btn">
+                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                    <span>Send Email to College</span>
+                </a>
+                <a href="tel:9659453226" class="modal-btn call-btn-emergency">
+                    <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                    <span>Call 9659453226</span>
+                </a>
+            </div>
+            <button id="close-sos" class="close-btn">Cancel</button>
+        </div>
+    </div>
+
+    <!-- REPORT ISSUE MODAL -->
+    <div id="report-modal" class="modal-overlay hidden">
+        <div class="modal-card glass-card">
+            <div class="modal-header">
+                <div class="sos-icon" style="background: var(--primary); box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);">?</div>
+                <h2>Report an Issue</h2>
+                <p>What seems to be the problem?</p>
+            </div>
+            <div class="modal-options">
+                <button class="modal-btn report-option" data-issue="Bus Delayed">
+                    <span>Bus Delayed</span>
+                </button>
+                <button class="modal-btn report-option" data-issue="Wrong Route">
+                    <span>Wrong Route</span>
+                </button>
+                <button class="modal-btn report-option" data-issue="Driver Behavior">
+                    <span>Driver Behavior</span>
+                </button>
+                <button class="modal-btn report-option" data-issue="Bus Overcrowded">
+                    <span>Bus Overcrowded</span>
+                </button>
+                <button class="modal-btn report-option" data-issue="Technical Issue">
+                    <span>Technical Issue</span>
+                </button>
+                <button class="modal-btn report-option" data-issue="Other">
+                    <span>Other</span>
+                </button>
+            </div>
+            <button id="close-report" class="close-btn">Cancel</button>
+        </div>
+    </div>
+
+    <!-- BOARDING PASS MODAL -->
+    <div id="boarding-pass-modal" class="modal-overlay hidden">
+        <div class="modal-card glass-card boarding-pass-card">
+            <div class="modal-header">
+                <h2>Digital Boarding Pass</h2>
+                <p>Scan this QR at the bus entrance</p>
+            </div>
+            <div class="boarding-pass-body">
+                <div id="qr-code-container" class="qr-container">
+                    <!-- Simulated QR SVG will be injected here -->
+                </div>
+                <div class="pass-details">
+                    <h3 id="pass-student-name">--</h3>
+                    <p id="pass-student-roll">--</p>
+                    <div class="pass-meta">
+                        <div>
+                            <span>BUS</span>
+                            <p id="pass-bus-no">--</p>
+                        </div>
+                        <div>
+                            <span>SEAT</span>
+                            <p>Assigned</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="close-boarding-pass" class="close-btn" style="width: 100%; margin-top: 20px;">Close Pass</button>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

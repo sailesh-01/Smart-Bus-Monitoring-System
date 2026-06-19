@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support | Smart Bus Tracking</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .support-container {
+            max-width: 900px;
+            margin: 60px auto;
+            padding: 40px;
+        }
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
+        }
+        .support-card {
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .support-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+        .support-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+        .support-card h3 {
+            color: #fff;
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+        }
+        .support-card p {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .contact-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .contact-link:hover { text-decoration: underline; }
+
+        .emergency-banner {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 24px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            color: #fff;
+        }
+        .emergency-icon { font-size: 2rem; color: var(--error); }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 30px;
+            transition: all 0.3s;
+        }
+        .back-btn:hover {
+            transform: translateX(-5px);
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body class="dashboard-page">
+    <div class="support-container">
+        <a href="login.html" class="back-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Back to Login
+        </a>
+        
+        <div class="login-header" style="text-align: left; margin-bottom: 48px;">
+            <h1 style="font-size: 2.8rem;">Contact Support</h1>
+            <p class="subtitle">We're here to help you navigate campus safely</p>
+        </div>
+
+        <div class="emergency-banner">
+            <span class="emergency-icon">🚨</span>
+            <div>
+                <h3 style="margin-bottom: 4px;">Emergency Helpline</h3>
+                <p style="opacity: 0.8;">For immediate assistance regarding bus breakdowns or safety concerns: <strong style="color: var(--error);">+91 91100 22334</strong></p>
+            </div>
+        </div>
+
+        <div class="support-grid">
+            <div class="support-card glass-card">
+                <span class="support-icon">✉️</span>
+                <h3>Email Support</h3>
+                <p>Have a question about your bus route or account? Send us an email anytime.</p>
+                <a href="mailto:support@campusbus.edu" class="contact-link">support@campusbus.edu</a>
+            </div>
+
+            <div class="support-card glass-card">
+                <span class="support-icon">🏢</span>
+                <h3>Office Location</h3>
+                <p>Visit the Transport Department office for lost property or registration issues.</p>
+                <p style="margin-top: 10px; color: #fff;">Admin Block, Room 102</p>
+            </div>
+
+            <div class="support-card glass-card">
+                <span class="support-icon">🕒</span>
+                <h3>Operating Hours</h3>
+                <p>Our support team is available during standard college hours.</p>
+                <p style="margin-top: 10px; color: #fff;">Mon - Sat: 8:00 AM - 6:00 PM</p>
+            </div>
+        </div>
+
+        <div class="glass-card" style="margin-top: 40px; padding: 40px; text-align: center;">
+            <h3 style="color: #fff; margin-bottom: 12px;">Did You Know?</h3>
+            <p style="color: var(--text-dim);">You can check the live status of all routes on the login page widget before you start your journey.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Guide | Smart Bus Tracking</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .guide-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 40px;
+        }
+        .guide-section {
+            margin-bottom: 40px;
+        }
+        .guide-section h3 {
+            color: var(--accent);
+            margin-bottom: 16px;
+            font-size: 1.4rem;
+        }
+        .guide-section p {
+            line-height: 1.6;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .feature-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            border-radius: 16px;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 30px;
+            transition: all 0.3s;
+        }
+        .back-btn:hover {
+            transform: translateX(-5px);
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body class="dashboard-page">
+    <div class="guide-container glass-card">
+        <a href="login.html" class="back-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Back to Login
+        </a>
+        
+        <div class="login-header" style="text-align: left;">
+            <h1 style="font-size: 2.8rem;">How to Use Smart Bus</h1>
+            <p class="subtitle">Complete guide for student commuters</p>
+        </div>
+
+        <div class="guide-section">
+            <h3>🚀 Getting Started</h3>
+            <p>Welcome to the Smart Bus Management System! To track your bus, simply enter your <strong>Roll Number</strong> on the login page.</p>
+            <p>Ensure you are using the roll number provided during registration (e.g., ES24AD131).</p>
+        </div>
+
+        <div class="guide-section">
+            <h3>🗺️ Live Tracking Features</h3>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <h4 style="color: #fff; margin-bottom: 10px;">Campus Map</h4>
+                    <p style="font-size: 0.9rem;">See your bus moving in real-time along the optimized route path.</p>
+                </div>
+                <div class="feature-item">
+                    <h4 style="color: #fff; margin-bottom: 10px;">Smart ETA</h4>
+                    <p style="font-size: 0.9rem;">Get precise arrival times based on traffic and live speed data.</p>
+                </div>
+                <div class="feature-item">
+                    <h4 style="color: #fff; margin-bottom: 10px;">Stop Pins</h4>
+                    <p style="font-size: 0.9rem;">Click any stop on the map to pin it as your destination.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="guide-section">
+            <h3>❔ Frequently Asked Questions</h3>
+            <p><strong>What if my bus isn't moving?</strong><br>Check the "System Status" widget on the login page. If it says "Normal", allow a few seconds for data refresh. If the bus is in a stop, it will show as "In Stop".</p>
+            <p><strong>How do I contact the driver?</strong><br>Once logged in, your driver's contact details are available in the dashboard sidebar. Use the "Call Driver" button for emergencies only.</p>
+        </div>
+
+        <div class="guide-section" style="border-top: 1px solid var(--glass-border); padding-top: 30px; text-align: center;">
+            <p>© 2026 Smart Bus Management System • Safety first, tracking always.</p>
+        </div>
+    </div>
+</body>
+</html>

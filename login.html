@@ -7,18 +7,193 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body class="auth-page">
-    <div class="container">
-        <div id="login-section" class="glass-card">
-            <h1>BusTracker</h1>
-            <p class="subtitle">Enter your roll number to track your bus</p>
-            
-            <div class="input-group">
-                <label for="roll-number">Roll Number</label>
-                <input type="text" id="roll-number" placeholder="e.g. ES24AD131" autocomplete="off">
+    <div class="login-bg-elements">
+        <div class="bg-shape shape-1"></div>
+        <div class="bg-shape shape-2"></div>
+        <div class="bg-bus bus-1">
+            <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z" fill="currentColor"/></svg>
+        </div>
+        <div class="bg-bus bus-2">
+            <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z" fill="currentColor"/></svg>
+        </div>
+        <!-- Decorative Student Icons -->
+        <div class="bg-icon icon-book">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        </div>
+        <div class="bg-icon icon-cap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+        </div>
+        <div class="bg-icon icon-pin">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        </div>
+    </div>
+
+    <div class="campus-notice-bar">
+        <span class="notice-label">NEWS:</span>
+        <div class="notice-ticker">
+            <span id="notice-text">Connecting to campus news feed...</span>
+        </div>
+    </div>
+
+
+
+        <div class="container auth-container">
+
+
+            <!-- Widgets moved inside for mobile ordering control -->
+            <!-- Widgets moved inside for mobile ordering control -->
+            <div class="time-weather-widget glass-card">
+                <div class="time-box">
+                    <span id="live-time">00:00:00</span>
+                    <span id="live-date">...</span>
+                </div>
+                <div class="weather-box">
+                    <span id="weather-temp">24°C</span>
+                    <span id="weather-desc">Sunny</span>
+                </div>
+            </div>
+
+            <div class="upcoming-events-widget glass-card">
+                <h4>📅 Campus Events</h4>
+                <div id="dynamic-events-container">
+                    <p style="font-size: 0.8rem; color: var(--text-dim);">Loading events...</p>
+                </div>
+            </div>
+
+            <div class="campus-status-widget glass-card">
+                <div class="status-dot pulse-success"></div>
+                <div class="status-info">
+                    <p class="status-label">Campus System Status</p>
+                    <p class="status-value">All Buses on Route • Normal</p>
+                </div>
+            </div>
+            <div class="route-search-minimal">
+                <div class="search-input-group">
+                    <input type="text" id="minimal-route-search" placeholder="Search bus no or stop..." autocomplete="off">
+                    <div id="search-suggestions" class="search-suggestions hidden"></div>
+                </div>
+                <button id="search-go">Explore</button>
+            </div>
+
+            <div class="glass-card login-card">
+            <div class="login-header">
+                <h2>Welcome Back</h2>
+                <p class="subtitle">Select your role to continue</p>
+            </div>
+
+            <div class="role-selector">
+                <div id="sel-student" class="role-option active" data-role="student">Student</div>
+                <div id="sel-staff" class="role-option" data-role="staff">Staff</div>
+                <div class="selector-glider"></div>
+            </div>
+
+            <div id="login-form-area">
+                <!-- Student Input -->
+                <div id="student-fields" class="input-animate">
+                    <div class="input-group">
+                        <label for="roll-number">Roll Number</label>
+                        <input type="text" id="roll-number" placeholder="e.g. ES24AD131" autocomplete="off">
+                    </div>
+                </div>
+
+                <!-- Staff Inputs -->
+                <div id="staff-fields" class="input-animate hidden">
+                    <div class="input-group">
+                        <label for="staff-user">Username</label>
+                        <input type="text" id="staff-user" placeholder="Enter username" autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <label for="staff-pass">Password</label>
+                        <input type="password" id="staff-pass" placeholder="Enter password" autocomplete="off">
+                    </div>
+                </div>
+
+                <button id="login-submit-btn">Sign In</button>
+
+
+            </div>
+
+            <p id="login-error" class="error-msg hidden">Invalid credentials. Please try again.</p>
+        </div>
+
+        <div class="login-quick-tips">
+            <a href="guide.html" class="tip-item" style="text-decoration: none;">
+                <span class="tip-icon">📘</span>
+                <span>Student Guide</span>
+            </a>
+            <a href="routes.html" class="tip-item" style="text-decoration: none;">
+                <span class="tip-icon">📍</span>
+                <span>View All Routes</span>
+            </a>
+            <a href="support.html" class="tip-item" style="text-decoration: none;">
+                <span class="tip-icon">📱</span>
+                <span>Contact Support</span>
+            </a>
+        </div>
+
+        <!-- NEW: Essential Services Grid -->
+        <div class="essential-services-grid">
+            <div class="service-card">
+                <span class="service-icon">📶</span>
+                <span class="service-name">Campus WiFi</span>
+                <span class="service-status">Connected</span>
+            </div>
+            <div class="service-card">
+                <span class="service-icon">📚</span>
+                <span class="service-name">Library</span>
+                <span class="service-status" id="lib-status">42 Seats</span>
+            </div>
+            <div class="service-card">
+                <span class="service-icon">☕</span>
+                <span class="service-name">Cafeteria</span>
+                <span class="service-status">Wait: 5m</span>
+            </div>
+        </div>
+
+        <!-- NEW: Feedback Widget -->
+        <div class="glass-card feedback-card">
+            <div class="feedback-header">
+                <span class="icon">✉️</span>
+                <h4>Share Feedback</h4>
+            </div>
+            <p>Help us improve your campus commute experience.</p>
+            <div class="feedback-actions">
+                <button class="feedback-btn main" id="btn-give-feedback">Rate System</button>
+            </div>
+        </div>
+
+        <!-- Student Quote Widget -->
+        <div class="student-quote-widget">
+            <p id="student-quote">"Always on time, makes my commute so much easier!"</p>
+            <span id="quote-author">- Ruthran, Final Year</span>
+        </div>
+
+        <!-- NEW: Quick Access Toggle Icon (Floating FAB) -->
+        <button id="quick-support-toggle" class="support-fab" title="Quick Support & Links">
+            <span class="icon">💬</span>
+        </button>
+
+        <!-- NEW: Toggleable Quick Access Widget (Bottom Right) -->
+        <div id="quick-support-widget" class="quick-access-widget hidden">
+            <div class="status-chip">
+                <span class="status-pulse green"></span>
+                <span id="campus-status-text">Campus Status: Normal</span>
             </div>
             
-            <button id="login-btn">Sign In</button>
-            <p id="login-error" class="hidden" style="color: var(--error); font-size: 0.85rem; margin-top: 12px; text-align: center;">Roll number not found. Please try ES24AD131.</p>
+            <div class="quick-links-grid">
+                <a href="tel:04294226301" class="quick-btn" title="Call Security">
+                    <span class="icon">🛡️</span>
+                    <span class="label">Security</span>
+                </a>
+                <a href="tel:04294226305" class="quick-btn" title="Medical Room">
+                    <span class="icon">🏥</span>
+                    <span class="label">Medical</span>
+                </a>
+            </div>
+            
+            <div class="widget-footer">
+                Quick Support & Links
+            </div>
         </div>
     </div>
     <script src="script.js"></script>
